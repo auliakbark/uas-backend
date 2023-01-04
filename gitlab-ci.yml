@@ -1,0 +1,22 @@
+# stages:
+#   - main
+
+
+# # upload job, see https://lftp.yar.ru/lftp-man.html
+# main:
+#   stage: main
+#   script:
+#     - apt-get update -qq && apt-get install -y -qq lftp
+#     - lftp -c "set ftp:ssl-allow no; open -u $USER,$PASS $HOST; mirror -Rnev  --ignore-time --parallel=10 --exclude-glob .git* --exclude .git/ --exclude assets/ "
+#   only:
+#     - main
+
+
+before_script:
+  - apt-get update -qy
+  - apt-get install -y lftp
+
+build:
+  script:
+    # Sync to FTP
+    - lftp -e "set ftp:ssl-allow no; open v3421020.mhs.d3tiuns.com; user $USER $PASS; mirror -X .* -X .*/ --reverse --verbose --delete local-folder/ destination-folder/; bye"
